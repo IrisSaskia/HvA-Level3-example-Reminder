@@ -4,4 +4,5 @@
     <string name="give_reminder">Give a reminder</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="addReminder_explain">Add your reminder</string>
+    <string name="reminder_hint">Reminder</string>
 </resources>

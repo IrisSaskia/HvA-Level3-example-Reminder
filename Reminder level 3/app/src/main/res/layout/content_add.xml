@@ -21,7 +21,7 @@
         android:id="@+id/tilReminder"
         android:layout_width="411dp"
         android:layout_height="47dp"
-        android:hint="hint"
+        android:hint="@string/reminder_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,6 @@
             android:id="@+id/etAddReminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/give_reminder"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 

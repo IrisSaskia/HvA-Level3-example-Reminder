@@ -1,5 +1,6 @@
 package com.example.reminder
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -14,7 +15,9 @@ import kotlinx.android.synthetic.main.activity_add.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_add.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.activity_main.toolbar as toolbar1
+import kotlinx.android.synthetic.main.activity_main.toolbar as toolbar
+
+const val ADD_REMINDER_REQUEST_CODE = 100
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,27 +32,46 @@ class MainActivity : AppCompatActivity() {
 
         initViews();
 
-        fabAdd.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        fabAdd.setOnClickListener {
+            startAddActivity()
+        }
+    }
 
-            // Code to add to the floating button onClickListener:
-            val reminder = etAddReminder.text.toString()
-            addReminder(reminder)
+    private fun initViews() {
+        // Initialize the recycler view with a linear layout manager, adapter
+        rvReminders.layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+        rvReminders.adapter = reminderAdapter
+        rvReminders.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
+        createItemTouchHelper().attachToRecyclerView(rvReminders)
+    }
 
+    private fun startAddActivity() {
+        val intent = Intent(this, AddActivity::class.java)
+        startActivityForResult(intent, ADD_REMINDER_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                ADD_REMINDER_REQUEST_CODE -> {
+                    val reminder = data!!.getParcelableExtra<Reminder>(EXTRA_REMINDER)
+                    reminders.add(reminder)
+                    reminderAdapter.notifyDataSetChanged()
+                }
+            }
         }
     }
 
     // addReminder method
-    private fun addReminder(reminder: String) {
-        if (reminder.isNotBlank()) {
-            reminders.add(Reminder(reminder))
-            reminderAdapter.notifyDataSetChanged()
-            etAddReminder.text?.clear()
-        } else {
-            Snackbar.make(etAddReminder, "You must fill in the input field!", Snackbar.LENGTH_SHORT).show()
-        }
-    }
+//    private fun addReminder(reminder: String) {
+//        if (reminder.isNotBlank()) {
+//            reminders.add(Reminder(reminder))
+//            reminderAdapter.notifyDataSetChanged()
+//            etAddReminder.text?.clear()
+//        } else {
+//            Snackbar.make(etAddReminder, "You must fill in the input field!", Snackbar.LENGTH_SHORT).show()
+//        }
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -97,17 +119,5 @@ class MainActivity : AppCompatActivity() {
         return ItemTouchHelper(callback)
     }
 
-    private fun startAddActivity() {
-        val intent = Intent(this, AddActivity::class.java)
-        startActivity(intent)
-    }
 
-    private fun initViews() {
-
-        // Initialize the recycler view with a linear layout manager, adapter
-        rvReminders.layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
-        rvReminders.adapter = reminderAdapter
-        rvReminders.addItemDecoration(DividerItemDecoration(this@MainActivity, DividerItemDecoration.VERTICAL))
-        createItemTouchHelper().attachToRecyclerView(rvReminders)
-    }
 }
